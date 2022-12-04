@@ -12,5 +12,7 @@ const calories = input
   )
   .sort((a, b) => b - a)
 
+// part 1
 console.log(calories[0])
+// part 2
 console.log(calories.slice(0, 3).reduce((a, b) => a + b))
