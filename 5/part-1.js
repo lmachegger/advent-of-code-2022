@@ -1,19 +1,55 @@
 import { promises as fs } from 'fs'
 
-const inputStack = await fs.readFile('./input-stack.txt', 'utf-8')
-console.log(inputStack)
+const input = await fs.readFile('./input.txt', 'utf-8')
 
-const lengthOfStack = 3
-const stacks = [[], [], []]
+const [stackInput, instructionInput] = input.split('\n\n')
 
-const splitted = inputStack.split('\n')
-splitted.forEach((line, idx) => {
-  let seperatorCount = -1
-  let stackId = 0
+// stacks
+const stacks = [[], [], [], [], [], [], [], [], [], []]
+stackInput
+  .split('\n')
+  .slice(0, -1)
+  .forEach((line) => {
+    let stackId = 0
+    for (let i = 1; i < line.length; i += 4) {
+      if (line[i] !== ' ') {
+        stacks[stackId].push(line[i])
+      }
+      stackId++
+    }
+  })
 
-  for (let i = 0; i < line.length; i++) {
-    console.log('line: ', idx, line[i])
+stacks.forEach((stack) => {
+  stack.reverse()
+})
+
+// instructions
+const instructions = instructionInput.split('\n').map((line) => {
+  const splitted = line.split(' ')
+  const [count, start, end] = [splitted[1], splitted[3], splitted[5]].map((n) =>
+    Number(n)
+  )
+  return {
+    count,
+    start,
+    end,
   }
 })
 
-// console.log(stacks)
+console.log(instructions)
+
+instructions.forEach((inst) => {
+  const startStack = stacks[inst.start - 1]
+  const endStack = stacks[inst.end - 1]
+
+  for (let i = 0; i < inst.count; i++) {
+    const item = startStack.pop()
+    endStack.push(item)
+  }
+})
+
+console.log(stacks)
+
+let result = ''
+stacks.forEach((stack) => (result += stack[stack.length - 1]))
+console.log(result)
