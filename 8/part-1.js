@@ -5,32 +5,21 @@ const field = (await fs.readFile('./input.txt', 'utf-8'))
   .map((l) => l.split(''))
 
 const checkAllDirs = (x, y, val) => {
-  const checkRight = () => {
-    for (let checkX = x + 1; checkX < field[y].length; checkX++) {
-      if (field[y][checkX] >= val) return false
-    }
-    return true
-  }
-  const checkLeft = () => {
-    for (let checkX = 0; checkX < x; checkX++) {
-      if (field[y][checkX] >= val) return false
-    }
-    return true
-  }
-  const checkDown = () => {
-    for (let checkY = y + 1; checkY < field.length; checkY++) {
-      if (field[checkY][x] >= val) return false
-    }
-    return true
-  }
-  const checkUp = () => {
-    for (let checkY = 0; checkY < y; checkY++) {
-      if (field[checkY][x] >= val) return false
-    }
-    return true
-  }
+  const right = field[y].slice(x + 1, field[y].length).every((v) => v < val)
 
-  return checkRight() || checkLeft() || checkDown() || checkUp()
+  const left = field[y].slice(0, x).every((v) => v < val)
+
+  const down = field
+    .map((f) => f[x])
+    .slice(y + 1, field.length)
+    .every((v) => v < val)
+
+  const up = field
+    .map((f) => f[x])
+    .slice(0, y)
+    .every((v) => v < val)
+
+  return right || left || down || up
 }
 
 const edgeTrees = field.length * 2 + field[0].length * 2 - 4
